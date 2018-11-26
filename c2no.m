@@ -84,7 +84,7 @@ function [varargout] = c2no(infile, outpcname, outfolder, ppc, varargin)
 
     % Read the original point cloud file
     pc = pcread(infile);
-    coordinates = unique(pc.Location,'rows'); % Discard repeated points
+    coordinates = unique(pc.Location,'rows','stable'); % Discard repeated points
     % Determine number of clusters
     num_clust = ceil(length(coordinates)/ppc);
 
@@ -593,18 +593,18 @@ function [varargout] = c2no(infile, outpcname, outfolder, ppc, varargin)
         idx = find(progress(:,end) < ppc);
         % For each of the smaller clusters
         for i=1:length(idx)
+            % Get cluster size
+            init_size = progress(idx(i),end);
             % Compute the number of points missing
-            extra = ppc - progress(idx(i),end);
-            if(extra < ppc)
-                % Get cluster points
-                cluster = coordinates(ref_assignment == idx(i), :);
-                % Randomly repeat points until cluster is full
-                while(extra > 0)
-                    rem_idx = randsample(1:progress(idx(i),end), min(extra, progress(idx(i),end)));
-                    coordinates = [coordinates; cluster(rem_idx, :)];
-                    ref_assignment = [ref_assignment; idx(i).*ones(length(rem_idx),1)];
-                    extra = extra - length(rem_idx);
-                end
+            extra = ppc - init_size;
+            % Get cluster points
+            cluster = coordinates(ref_assignment == idx(i), :);
+            % Randomly repeat points until cluster is full
+            while(extra > 0)
+                rem_idx = randsample(1:init_size, min(extra, init_size));
+                coordinates = [coordinates; cluster(rem_idx, :)];
+                ref_assignment = [ref_assignment; idx(i).*ones(length(rem_idx),1)];
+                extra = extra - length(rem_idx);
             end
         end
         if debug
