@@ -231,7 +231,7 @@ function [varargout] = c2no(infile, outpcname, outfolder, ppc, varargin)
     end
     % Compute threshold for adjacency restriction %
     % Sample 1% of the points
-    rem_idx = randsample(1:pc.Count, round(0.01*pc.Count));
+    rem_idx = randsample(1:length(coordinates), round(0.01*length(coordinates)));
     current_points_samp = coordinates(rem_idx, :);
     % Compute distance to closest point for each
     [min_neigh_dist,~] = pdist2(coordinates,current_points_samp,'euclidean','Smallest',2);
