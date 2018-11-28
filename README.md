@@ -7,7 +7,7 @@ the user can specify if only 1 cluster should be incomplete with
 the remaining points, or if all points should be equally distributed.
 These incomplete clusters can be padded by repeating points.
 The resulting clusters are compact and do not overlap each other.
-A detailed description of the algorithm is available at:
+A detailed description of the algorithm will be available soon.
 
 # Requirements
 
